@@ -15,13 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $this->call([
-            UsersTableSeeder::class,
-            AdminUsersTableSeeder::class,
-            CoursesTableSeeder::class,
-            CoursesChangeGradeFormTableSeeder::class,
-            StudentsTableSeeder::class,
-            ChangeGradeFormTableSeeder::class,
-        ]);
+        \App\Models\User::factory(10)->create();
+        \App\Models\AdminUser::factory(5)->create();
+        \App\Models\Course::factory(10)->create();
+        \App\Models\CoursesChangeGradeForm::factory(10)->create();
+        \App\Models\Student::factory(10)->create();
+        \App\Models\ChangeGradeForm::factory(10)->create();
     }
 }
