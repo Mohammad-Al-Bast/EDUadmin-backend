@@ -24,14 +24,16 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name'           => 'required|string|max:255',
-            'email'          => 'required|email|unique:students,email',
-            'student_number' => 'required|string|unique:students,student_number',
+        $request->validate([
+            'student_name' => 'required|string|max:255',
             // Add other fields and rules as needed
         ]);
 
-        $student = Student::create($validated);
+        if (Student::where('student_name', $request->name)->exists()) {
+            return response()->json(['message' => 'Student with this name already exists'], 409);
+        }
+
+        $student = Student::create($request->all());
         return response()->json($student, 201);
     }
 
@@ -39,35 +41,7 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-
-            // Map 'student_name' to 'name' if present
-            if ($request->has('student_name')) {
-                $request->merge(['name' => $request->input('student_name')]);
-            }
-
-            $validated = $request->validate([
-                'name'           => 'sometimes|required|string|max:255',
-                'email'          => 'sometimes|required|email|unique:students,email,' . $student->id,
-                'student_number' => 'sometimes|required|string|unique:students,student_number,' . $student->id,
-                // Add other fields and rules as needed
-            ]);
-
-            // Only update if there are changes
-            if (empty($validated)) {
-                return response()->json(['message' => 'No valid fields to update'], 400);
-            }
-
-            $student->fill($validated);
-
-            if ($student->isDirty()) {
-                $student->save();
-                return response()->json([
-                    'message' => 'Student updated successfully',
-                    'student' => $student->fresh()
-                ]);
-            } else {
-                return response()->json(['message' => 'No changes detected'], 200);
-            }
+            return response()->json(['message' => 'Student exists', 'student' => $student]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);
         }
