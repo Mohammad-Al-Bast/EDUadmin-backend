@@ -40,6 +40,11 @@ class StudentController extends Controller
         try {
             $student = Student::findOrFail($id);
 
+            // Map 'student_name' to 'name' if present
+            if ($request->has('student_name')) {
+                $request->merge(['name' => $request->input('student_name')]);
+            }
+
             $validated = $request->validate([
                 'name'           => 'sometimes|required|string|max:255',
                 'email'          => 'sometimes|required|email|unique:students,email,' . $student->id,
@@ -47,11 +52,22 @@ class StudentController extends Controller
                 // Add other fields and rules as needed
             ]);
 
-            $student->update($validated);
-            return response()->json([
-                'message' => 'Student updated successfully',
-                'student' => $student->fresh()
-            ]);
+            // Only update if there are changes
+            if (empty($validated)) {
+                return response()->json(['message' => 'No valid fields to update'], 400);
+            }
+
+            $student->fill($validated);
+
+            if ($student->isDirty()) {
+                $student->save();
+                return response()->json([
+                    'message' => 'Student updated successfully',
+                    'student' => $student->fresh()
+                ]);
+            } else {
+                return response()->json(['message' => 'No changes detected'], 200);
+            }
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);
         }
