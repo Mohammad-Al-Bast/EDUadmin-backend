@@ -19,7 +19,18 @@ class ChangeGradeFormController extends Controller
 
     public function store(Request $request)
     {
-        $item = ChangeGradeForm::create($request->all());
+        $validated = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id'  => 'required|exists:courses,id',
+            'new_grade'  => 'required|string|max:5', // adjust type/range as needed
+            'reason'     => 'required|string|max:500',
+            // Prevent duplicate requests for same student/course/grade
+            // You may need a unique index in DB for this
+            // Example:
+            // 'student_id' => 'unique:change_grade_forms,student_id,NULL,id,course_id,' . $request->course_id . ',new_grade,' . $request->new_grade,
+        ]);
+
+        $item = ChangeGradeForm::create($validated);
         return response()->json($item, 201);
     }
 

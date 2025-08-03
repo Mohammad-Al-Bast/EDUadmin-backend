@@ -19,14 +19,27 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $course = Course::create($request->all());
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:courses,name',
+            'code' => 'required|string|max:50|unique:courses,code',
+            // Add other fields and rules as needed
+        ]);
+
+        $course = Course::create($validated);
         return response()->json($course, 201);
     }
 
     public function update(Request $request, $id)
     {
         $course = Course::findOrFail($id);
-        $course->update($request->all());
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255|unique:courses,name,' . $course->id,
+            'code' => 'sometimes|required|string|max:50|unique:courses,code,' . $course->id,
+            // Add other fields and rules as needed
+        ]);
+
+        $course->update($validated);
         return response()->json($course);
     }
 
