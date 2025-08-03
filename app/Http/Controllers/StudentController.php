@@ -41,7 +41,33 @@ class StudentController extends Controller
     {
         try {
             $student = Student::findOrFail($id);
-            return response()->json(['message' => 'Student exists', 'student' => $student]);
+
+            $validated = $request->validate([
+                'student_name'           => 'sometimes|required|string|max:255',
+                'campus'                 => 'sometimes|nullable|string|max:255',
+                'school'                 => 'sometimes|nullable|string|max:255',
+                'major'                  => 'sometimes|nullable|string|max:255',
+                'semester'               => 'sometimes|nullable|string|max:255',
+                'year'                   => 'sometimes|nullable|integer',
+                'registered_courses_id'  => 'sometimes|nullable|integer',
+                // Add other fields and rules as needed
+            ]);
+
+            if (empty($validated)) {
+                return response()->json(['message' => 'No valid fields to update'], 400);
+            }
+
+            $student->fill($validated);
+
+            if ($student->isDirty()) {
+                $student->save();
+                return response()->json([
+                    'message' => 'Student updated successfully',
+                    'student' => $student->fresh()
+                ]);
+            } else {
+                return response()->json(['message' => 'No changes detected'], 200);
+            }
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);
         }
