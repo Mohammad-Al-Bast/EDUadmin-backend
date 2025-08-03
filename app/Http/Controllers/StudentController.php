@@ -48,7 +48,10 @@ class StudentController extends Controller
             ]);
 
             $student->update($validated);
-            return response()->json($student);
+            return response()->json([
+                'message' => 'Student updated successfully',
+                'student' => $student->fresh()
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);
         }
@@ -59,7 +62,10 @@ class StudentController extends Controller
         try {
             $student = Student::findOrFail($id);
             $student->delete();
-            return response()->json(null, 204);
+            return response()->json([
+                'message' => 'Student deleted successfully',
+                'student' => $student
+            ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);
         }
