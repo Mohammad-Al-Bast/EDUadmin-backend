@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StudentController extends Controller
 {
@@ -14,7 +15,11 @@ class StudentController extends Controller
 
     public function show($id)
     {
-        return response()->json(Student::findOrFail($id));
+        try {
+            return response()->json(Student::findOrFail($id));
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
     }
 
     public function store(Request $request)
@@ -32,22 +37,31 @@ class StudentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $student = Student::findOrFail($id);
+        try {
+            $student = Student::findOrFail($id);
 
-        $validated = $request->validate([
-            'name'           => 'sometimes|required|string|max:255',
-            'email'          => 'sometimes|required|email|unique:students,email,' . $student->id,
-            'student_number' => 'sometimes|required|string|unique:students,student_number,' . $student->id,
-            // Add other fields and rules as needed
-        ]);
+            $validated = $request->validate([
+                'name'           => 'sometimes|required|string|max:255',
+                'email'          => 'sometimes|required|email|unique:students,email,' . $student->id,
+                'student_number' => 'sometimes|required|string|unique:students,student_number,' . $student->id,
+                // Add other fields and rules as needed
+            ]);
 
-        $student->update($validated);
-        return response()->json($student);
+            $student->update($validated);
+            return response()->json($student);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
     }
 
     public function destroy($id)
     {
-        Student::destroy($id);
-        return response()->json(null, 204);
+        try {
+            $student = Student::findOrFail($id);
+            $student->delete();
+            return response()->json(null, 204);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Student not found'], 404);
+        }
     }
 }
