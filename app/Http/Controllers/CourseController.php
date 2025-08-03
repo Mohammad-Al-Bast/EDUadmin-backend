@@ -23,14 +23,32 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'course_name' => 'required|string|max:255|unique:courses,course_name',
-            'course_code' => 'required|string|max:50|unique:courses,course_code',
-            // Add other fields and rules as needed
-        ]);
+        try {
+            $validated = $request->validate([
+                'course_name'        => 'required|string|max:255|unique:courses,course_name,NULL,course_id',
+                'course_code'        => 'required|string|max:50|unique:courses,course_code,NULL,course_id',
+                'course_description' => 'nullable|string',
+                'course_credits'     => 'nullable|integer',
+                'department'         => 'nullable|string|max:255',
+                'instructor'         => 'nullable|string|max:255',
+                'section'            => 'nullable|string|max:50',
+                'credits'            => 'nullable|integer',
+                'room'               => 'nullable|string|max:50',
+                'schedule'           => 'nullable|string|max:255',
+                'days'               => 'nullable|string|max:255',
+                'time'               => 'nullable|string|max:50',
+                'school'             => 'nullable|string|max:255',
+            ]);
 
-        $course = Course::create($validated);
-        return response()->json($course, 201);
+            $course = Course::create($validated);
+            return response()->json($course, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->errors();
+            if ($errors->has('course_name') || $errors->has('course_code')) {
+                return response()->json(['message' => 'This course already exists.'], 409);
+            }
+            throw $e;
+        }
     }
 
     public function update(Request $request, $id)
@@ -39,10 +57,21 @@ class CourseController extends Controller
             $course = Course::findOrFail($id);
 
 
+
             $validated = $request->validate([
-                'course_name' => 'sometimes|required|string|max:255|unique:courses,course_name,' . $course->id,
-                'course_code' => 'sometimes|required|string|max:50|unique:courses,course_code,' . $course->id,
-                // Add other fields and rules as needed
+                'course_name'        => 'sometimes|required|string|max:255|unique:courses,course_name,' . $course->course_id . ',course_id',
+                'course_code'        => 'sometimes|required|string|max:50|unique:courses,course_code,' . $course->course_id . ',course_id',
+                'course_description' => 'sometimes|nullable|string',
+                'course_credits'     => 'sometimes|nullable|integer',
+                'department'         => 'sometimes|nullable|string|max:255',
+                'instructor'         => 'sometimes|nullable|string|max:255',
+                'section'            => 'sometimes|nullable|string|max:50',
+                'credits'            => 'sometimes|nullable|integer',
+                'room'               => 'sometimes|nullable|string|max:50',
+                'schedule'           => 'sometimes|nullable|string|max:255',
+                'days'               => 'sometimes|nullable|string|max:255',
+                'time'               => 'sometimes|nullable|string|max:50',
+                'school'             => 'sometimes|nullable|string|max:255',
             ]);
 
             if (empty($validated)) {
