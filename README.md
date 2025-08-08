@@ -7,17 +7,164 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+---
+# EDUadmin Backend Documentation
+
+## 1. Project Overview
+
+EDUadmin Backend is a robust server-side application designed to manage educational administration tasks. It provides APIs and services for handling users, courses, grade changes, and student records, supporting both administrative and student-facing operations. The backend is built for scalability, security, and ease of integration with frontend clients.
+
+## 2. Technologies Used
+
+- **Framework:** Laravel (PHP)
+- **Database:** MySQL (configurable)
+- **Package Manager:** Composer (PHP), npm (JavaScript assets)
+- **Testing:** PHPUnit, Pest
+- **Build Tool:** Vite
+- **Other Libraries:** FakerPHP, GuzzleHTTP, Symfony components, etc.
+
+## 3. Folder and File Structure
+
+- `app/` – Main application code
+  - `Http/Controllers/` – API and web controllers
+  - `Http/Middleware/` – Request middleware
+  - `Http/Requests/` – Form request validation
+  - `Models/` – Eloquent models (AdminUser, Student, Course, etc.)
+  - `Providers/` – Service providers
+  - `Services/` – Business logic services
+- `bootstrap/` – Application bootstrapping
+- `config/` – Configuration files (database, mail, cache, etc.)
+- `database/`
+  - `factories/` – Model factories for testing
+  - `migrations/` – Database migration scripts
+  - `seeders/` – Database seeders
+- `public/` – Publicly accessible files (entry point: `index.php`)
+- `resources/`
+  - `css/` – Stylesheets
+  - `js/` – JavaScript assets
+  - `views/` – Blade templates
+- `routes/` – Route definitions (`api.php`, `web.php`, `console.php`)
+- `storage/` – File, cache, and log storage
+- `tests/` – Test suites (Feature, Unit)
+- `vendor/` – Composer dependencies
+- `artisan` – Laravel CLI tool
+- `composer.json` – PHP dependencies and scripts
+- `package.json` – JavaScript dependencies
+- `phpunit.xml` – PHPUnit configuration
+- `README.md` – Project documentation
+- `SECURITY_REVIEW.md` – Security review and notes
+
+## 4. Setup Instructions
+
+### Prerequisites
+
+- PHP >= 8.1
+- Composer
+- Node.js & npm
+- MySQL or compatible database
+
+### Steps
+
+1. **Clone the repository:**
+	```powershell
+	git clone https://github.com/Mohammad-Al-Bast/EDUadmin.git
+	cd EDUadmin-backend
+	```
+
+2. **Install PHP dependencies:**
+	```powershell
+	composer install
+	```
+
+3. **Install JavaScript dependencies:**
+	```powershell
+	npm install
+	```
+
+4. **Copy and configure environment file:**
+	```powershell
+	cp .env.example .env
+	```
+	Edit `.env` to set your database and mail credentials.
+
+5. **Generate application key:**
+	```powershell
+	php artisan key:generate
+	```
+
+6. **Run migrations and seeders:**
+	```powershell
+	php artisan migrate --seed
+	```
+
+7. **Start the development server:**
+	```powershell
+	php artisan serve
+	```
+
+## 5. Usage
+
+- Access the backend via API endpoints (see below) or connect a frontend client.
+- For admin operations, authenticate using provided credentials.
+- Use the web interface (if available) for direct interaction.
+- API requests can be made using tools like Postman or via frontend integration.
+
+## 6. API Endpoints
+
+### Example Endpoints
+
+| Route                        | Method | Description                    | Request Body / Params | Response Format      |
+|------------------------------|--------|-------------------------------|----------------------|---------------------|
+| `/api/login`                 | POST   | User login                    | `{email, password}`  | `{token, user}`     |
+| `/api/users`                 | GET    | List all users                | -                    | `[users]`           |
+| `/api/courses`               | GET    | List all courses              | -                    | `[courses]`         |
+| `/api/students`              | GET    | List all students             | -                    | `[students]`        |
+| `/api/change-grade`          | POST   | Submit grade change request   | `{student_id, ...}`  | `{status, message}` |
+| `/api/logout`                | POST   | Logout user                   | -                    | `{message}`         |
+
+*See `routes/api.php` for the full list of endpoints, parameters, and authentication requirements.*
+
+## 7. Deployment
+
+### VPS/Server Deployment
+
+1. **Upload files to your server.**
+2. **Install dependencies:**
+	```bash
+	composer install
+	npm install
+	npm run build
+	```
+3. **Configure `.env` for production.**
+4. **Set up web server (e.g., Apache/Nginx) to point to `public/` directory.**
+5. **Run migrations:**
+	```bash
+	php artisan migrate --force
+	```
+6. **Set up supervisor for queue workers (if needed).**
+7. **Configure SSL and security settings.**
+
+### Cloud Platforms
+
+- For platforms like Heroku, DigitalOcean, or AWS, follow their PHP/Laravel deployment guides.
+- Vercel/Netlify are not recommended for PHP backends.
+
+## 8. Contribution Guidelines
+
+- Fork the repository and create a feature branch.
+- Follow PSR coding standards and write tests for new features.
+- Submit pull requests with clear descriptions.
+- Report issues via GitHub Issues.
+
+## 9. License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
@@ -35,14 +182,6 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
 
 ## Contributing
 
