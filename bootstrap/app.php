@@ -13,6 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Register middleware aliases
+        $middleware->alias([
+            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+        ]);
+        
+        // Apply security headers globally
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        
         // API routes should always return JSON responses
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
