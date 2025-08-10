@@ -32,9 +32,10 @@ class UserController extends Controller
         // Only allow admin users to create new users
         // You may want to add proper admin authorization here
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|string|min:8',
+            'is_verified' => 'sometimes|boolean',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -53,9 +54,10 @@ class UserController extends Controller
         }
 
         $validated = $request->validate([
-            'name'     => 'sometimes|required|string|max:255',
-            'email'    => 'sometimes|required|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|required|string|min:8',
+            'name'        => 'sometimes|required|string|max:255',
+            'email'       => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'password'    => 'sometimes|required|string|min:8',
+            'is_verified' => 'sometimes|boolean',
         ]);
 
         if (isset($validated['password'])) {
