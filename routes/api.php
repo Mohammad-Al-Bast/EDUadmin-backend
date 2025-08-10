@@ -23,8 +23,8 @@ Route::get('/user', function (Request $request) {
 
 // Protected Resource Routes - Require Authentication
 Route::middleware('auth:sanctum')->group(function () {
-    // User can access their own data and basic read operations
     Route::get('users', [UserController::class, 'index'])->middleware('admin'); // Admin only
+    // User can access their own data and basic read operations
     Route::get('users/{user}', [UserController::class, 'show']); // Own data or admin
     Route::put('users/{user}', [UserController::class, 'update']); // Own data or admin
     Route::delete('users/{user}', [UserController::class, 'destroy'])->middleware('admin'); // Admin only
@@ -64,21 +64,21 @@ Route::middleware(['auth:sanctum', 'verified', 'admin'])->group(function () {
 Route::group(['namespace' => 'App\\Http\\Controllers\\API'], function () {
     // ------------- Register and Login -------------//
     Route::post('register', [AuthenticationController::class, 'register'])
-        ->middleware('throttle:6,1')
+        ->middleware('throttle:auth')
         ->name('register');
     Route::post('login', [AuthenticationController::class, 'login'])
-        ->middleware('throttle:6,1')
+        ->middleware('throttle:auth')
         ->name('login');
 
     // ------------- Password Reset (Guest) -------------//
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
         ->middleware('guest')
-        ->middleware('throttle:3,1')
+        ->middleware('throttle:password')
         ->name('password.email');
     
     Route::post('reset-password', [ResetPasswordController::class, 'reset'])
         ->middleware('guest')
-        ->middleware('throttle:3,1')
+        ->middleware('throttle:password')
         ->name('password.update');
 
     // ------------- Protected Routes -------------//
@@ -90,7 +90,7 @@ Route::group(['namespace' => 'App\\Http\\Controllers\\API'], function () {
         // Email Verification routes (no email verification required)
         Route::post('email/verify', [VerificationController::class, 'send'])->name('verification.send');
         Route::post('email/resend', [VerificationController::class, 'resend'])
-            ->middleware('throttle:3,1')
+            ->middleware('throttle:password')
             ->name('verification.resend');
     });
     
@@ -101,12 +101,12 @@ Route::group(['namespace' => 'App\\Http\\Controllers\\API'], function () {
         
         // Password Change
         Route::post('change-password', [ChangePasswordController::class, 'changePassword'])
-            ->middleware('throttle:3,1')
+            ->middleware('throttle:password')
             ->name('password.change');
     });
     
     // Email Verification Link (Signed Route)
     Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-        ->middleware(['auth:sanctum', 'signed', 'throttle:3,1'])
+        ->middleware(['auth:sanctum', 'signed', 'throttle:password'])
         ->name('verification.verify');
 });
