@@ -25,6 +25,10 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'is_admin' => 'sometimes|boolean',
+            'campus' => 'nullable|string|max:255',
+            'school' => 'nullable|string|max:255',
+            'profile' => 'nullable|string',
         ];
     }
 

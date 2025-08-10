@@ -36,6 +36,10 @@ class UserController extends Controller
             'email'       => 'required|email|unique:users,email',
             'password'    => 'required|string|min:8',
             'is_verified' => 'sometimes|boolean',
+            'is_admin'    => 'sometimes|boolean',
+            'campus'      => 'nullable|string|max:255',
+            'school'      => 'nullable|string|max:255',
+            'profile'     => 'nullable|string',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -58,6 +62,10 @@ class UserController extends Controller
             'email'       => 'sometimes|required|email|unique:users,email,' . $user->id,
             'password'    => 'sometimes|required|string|min:8',
             'is_verified' => 'sometimes|boolean',
+            'is_admin'    => 'sometimes|boolean',
+            'campus'      => 'sometimes|nullable|string|max:255',
+            'school'      => 'sometimes|nullable|string|max:255',
+            'profile'     => 'sometimes|nullable|string',
         ]);
 
         if (isset($validated['password'])) {

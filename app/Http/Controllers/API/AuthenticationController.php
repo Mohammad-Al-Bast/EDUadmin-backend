@@ -36,6 +36,7 @@ class AuthenticationController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'is_verified' => $user->is_verified,
+                'is_admin' => $user->is_admin,
                 'email_verified_at' => $user->email_verified_at
             ]
         ], 201);
@@ -65,6 +66,7 @@ class AuthenticationController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'is_verified' => $user->is_verified,
+                'is_admin' => $user->is_admin,
                 'email_verified_at' => $user->email_verified_at
             ]
         ]);
@@ -79,6 +81,8 @@ class AuthenticationController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'is_verified' => $user->is_verified,
+                'is_admin' => $user->is_admin,
                 'email_verified_at' => $user->email_verified_at
             ]
         ]);
@@ -118,6 +122,8 @@ class AuthenticationController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'is_verified' => $user->is_verified,
+                'is_admin' => $user->is_admin,
                 'email_verified_at' => $user->email_verified_at
             ]
         ]);

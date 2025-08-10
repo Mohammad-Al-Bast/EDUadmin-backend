@@ -23,6 +23,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'is_verified',
+        'is_admin',
+        'campus',
+        'school',
+        'profile',
     ];
 
     /**
@@ -46,6 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_verified' => 'boolean',
+            'is_admin' => 'boolean',
         ];
     }
 }

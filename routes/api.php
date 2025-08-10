@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CoursesChangeGradeFormController;
 use App\Http\Controllers\StudentController;
@@ -47,9 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'verified', 'admin'])->group(function () {
     // User management (admin only)
     Route::post('users', [UserController::class, 'store']);
-    
-    // Admin user management
-    Route::apiResource('admin-users', AdminUserController::class);
     
     // Course management (admin only)
     Route::post('courses', [CourseController::class, 'store']);

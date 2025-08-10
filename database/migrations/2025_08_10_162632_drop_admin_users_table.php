@@ -6,8 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
+        Schema::dropIfExists('admin_users');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Recreate admin_users table for rollback
         Schema::create('admin_users', function (Blueprint $table) {
             $table->id('admin_id');
             $table->string('email');
@@ -18,10 +30,5 @@ return new class extends Migration
             $table->string('school');
             $table->timestamps();
         });
-    }
-
-    public function down(): void
-    {
-        Schema::dropIfExists('admin_users');
     }
 };

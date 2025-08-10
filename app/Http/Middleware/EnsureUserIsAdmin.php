@@ -22,9 +22,8 @@ class EnsureUserIsAdmin
             ], 401);
         }
 
-        // Check if user has admin role (you can adjust this logic based on your user model)
-        // TODO: Implement proper admin check
-        if (! $request->user()->is_admin && $request->user()->email !== 'admin@eduadmin.com') {
+        // Check if user has admin role
+        if (!$request->user()->is_admin) {
             return response()->json([
                 'message' => 'Forbidden.',
                 'error' => 'Administrator access required'

@@ -30,6 +30,10 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(60),
             'is_verified' => false,
+            'is_admin' => false,
+            'campus' => fake()->word(),
+            'school' => fake()->word(),
+            'profile' => fake()->optional()->text(100),
         ];
     }
 
@@ -40,6 +44,18 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user should be an admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_admin' => true,
+            'is_verified' => true,
+            'email_verified_at' => now(),
         ]);
     }
 }
