@@ -7,7 +7,6 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -51,6 +50,11 @@ class AuthenticationController extends Controller
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
+        // Check if user is verified
+        if (!$user->is_verified) {
+            return response()->json(['error' => 'Your account is not verified. Please contact the system administrator to verify your account before you can log in.'], 403);
+        }
+
         $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
@@ -60,6 +64,7 @@ class AuthenticationController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'is_verified' => $user->is_verified,
                 'email_verified_at' => $user->email_verified_at
             ]
         ]);
