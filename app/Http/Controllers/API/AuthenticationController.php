@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AuthenticationController extends Controller
 {
@@ -22,15 +23,20 @@ class AuthenticationController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Send email verification notification
-        $user->sendEmailVerificationNotification();
+        // Set remember token using Laravel's built-in method
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+
+        // Refresh the model to get the database defaults
+        $user->refresh();
 
         return response()->json([
-            'message' => 'Registration successful. Please check your email to verify your account.',
+            'message' => 'Registration successful!',
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'is_verified' => $user->is_verified,
                 'email_verified_at' => $user->email_verified_at
             ]
         ], 201);
