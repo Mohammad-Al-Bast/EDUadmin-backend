@@ -9,6 +9,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CoursesChangeGradeFormController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ChangeGradeFormController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\API\AuthenticationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -55,6 +56,20 @@ Route::middleware(['auth:sanctum', 'verified', 'admin'])->group(function () {
     // Student management (admin only)
     Route::post('students', [StudentController::class, 'store']);
     Route::delete('students/{student}', [StudentController::class, 'destroy']);
+    
+    // Import endpoints (admin only)
+    Route::post('import/students', [ImportController::class, 'importStudents']);
+    Route::post('import/courses', [ImportController::class, 'importCourses']);
+    Route::get('import/template-info', [ImportController::class, 'getTemplateInfo']);
+    Route::get('import/template/students', [ImportController::class, 'downloadStudentTemplate']);
+    Route::get('import/template/courses', [ImportController::class, 'downloadCourseTemplate']);
+});
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::post('users/{id}/verify', [UserController::class, 'verifyUser']);
+    Route::post('users/{id}/block', [UserController::class, 'blockUser']);
+    Route::post('users/{id}/reset-password', [UserController::class, 'resetPassword']);
+    Route::delete('users/{id}/delete', [UserController::class, 'deleteUser']);
 });
 
 Route::group(['namespace' => 'App\\Http\\Controllers\\API'], function () {

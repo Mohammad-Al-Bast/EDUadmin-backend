@@ -1,0 +1,4 @@
+course_code,course_name,instructor,section,credits,room,schedule,days,time,school
+CS101,Introduction to Programming,Dr. Smith,A,3,Room 101,MWF,Monday Wednesday Friday,9:00-10:00,Engineering
+MATH201,Calculus II,Prof. Johnson,B,4,Room 205,TTh,Tuesday Thursday,11:00-12:30,Mathematics
+ENG110,English Composition,Dr. Brown,C,3,Room 150,MWF,Monday Wednesday Friday,14:00-15:00,Liberal Arts

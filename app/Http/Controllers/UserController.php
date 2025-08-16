@@ -86,4 +86,77 @@ class UserController extends Controller
         User::destroy($id);
         return response()->json(['message' => 'User deleted successfully']);
     }
+
+    public function verifyUser($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $originalStatus = $user->is_verified;
+        $user->is_verified = true;
+        $saved = $user->save();
+
+        return response()->json([
+            'message' => 'User verified successfully',
+            'original_status' => $originalStatus,
+            'new_status' => $user->is_verified,
+            'save_result' => $saved,
+            'user_id' => $user->id
+        ], 200);
+    }
+
+    public function blockUser($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $originalStatus = $user->is_verified;
+        $user->is_verified = false;
+        $saved = $user->save();
+
+        return response()->json([
+            'message' => 'User blocked successfully',
+            'original_status' => $originalStatus,
+            'new_status' => $user->is_verified,
+            'save_result' => $saved,
+            'user_id' => $user->id
+        ], 200);
+    }
+
+    public function resetPassword($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $newPassword = bin2hex(random_bytes(8));
+        $user->password = bcrypt($newPassword);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password reset successfully',
+            'new_password' => $newPassword
+        ], 200);
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $deleted = $user->delete();
+
+        return response()->json([
+            'message' => 'User deleted successfully',
+            'delete_result' => $deleted,
+            'user_id' => $id
+        ], 200);
+    }
 }
