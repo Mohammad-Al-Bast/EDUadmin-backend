@@ -12,7 +12,7 @@ class ChangeGradeFormFactory extends Factory
     public function definition(): array
     {
         return [
-            'student_id' => 1, // You may want to set this dynamically
+            'student_id' => \App\Models\Student::factory(), // Create a related student
             'student_full_name' => $this->faker->name(),
             'semester_year' => $this->faker->word() . ' ' . $this->faker->year(),
             'major' => $this->faker->word(),

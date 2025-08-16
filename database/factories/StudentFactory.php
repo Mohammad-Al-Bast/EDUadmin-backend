@@ -13,6 +13,7 @@ class StudentFactory extends Factory
     {
         return [
             'student_name' => $this->faker->name(),
+            'university_id' => $this->faker->unique()->numberBetween(10000000, 99999999), // 8-digit numeric university ID
             'campus' => $this->faker->word(),
             'school' => $this->faker->word(),
             'major' => $this->faker->word(),

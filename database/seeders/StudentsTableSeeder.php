@@ -12,6 +12,7 @@ class StudentsTableSeeder extends Seeder
         DB::table('students')->insert([
             [
                 'student_name' => 'John Doe',
+                'university_id' => '20250001', // 8-digit university ID
                 'campus' => 'Main',
                 'school' => 'Engineering',
                 'major' => 'Computer Science',

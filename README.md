@@ -119,7 +119,8 @@ EDUadmin Backend is a robust server-side application designed to manage educatio
 | `/api/users`                 | GET    | List all users                | -                    | `[users]`           |
 | `/api/courses`               | GET    | List all courses              | -                    | `[courses]`         |
 | `/api/students`              | GET    | List all students             | -                    | `[students]`        |
-| `/api/change-grade`          | POST   | Submit grade change request   | `{student_id, ...}`  | `{status, message}` |
+| `/api/students/{university_id}` | GET | Get student by university ID  | -                    | `{student}`         |
+| `/api/change-grade-forms`    | POST   | Submit grade change request   | `{university_id, ...}`| `{status, message}` |
 | `/api/logout`                | POST   | Logout user                   | -                    | `{message}`         |
 
 *See `routes/api.php` for the full list of endpoints, parameters, and authentication requirements.*

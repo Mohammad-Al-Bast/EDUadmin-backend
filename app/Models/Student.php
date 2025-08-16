@@ -8,10 +8,27 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     use HasFactory;
+    
     protected $primaryKey = 'student_id';
+    
     protected $fillable = [
-        'student_name', 'campus', 'school', 'major', 'semester', 'year', 'registered_courses_id',
+        'student_name', 'university_id', 'campus', 'school', 'major', 'semester', 'year', 'registered_courses_id',
     ];
+
+    protected $casts = [
+        'university_id' => 'integer',
+        'year' => 'integer',
+        'registered_courses_id' => 'integer',
+    ];
+
+    protected $hidden = [
+        'student_id', // Hide the internal student_id from JSON responses
+    ];
+
+    public function getRouteKeyName()
+    {
+        return 'university_id'; // Use university_id for route model binding
+    }
 
     public function registeredCourse()
     {
