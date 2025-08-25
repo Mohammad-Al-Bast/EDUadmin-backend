@@ -8,11 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     use HasFactory;
-    
+
     protected $primaryKey = 'student_id';
-    
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
-        'student_name', 'university_id', 'campus', 'school', 'major', 'semester', 'year', 'registered_courses_id',
+        'student_name',
+        'university_id',
+        'campus',
+        'school',
+        'major',
+        'semester',
+        'year',
+        'registered_courses_id',
     ];
 
     protected $casts = [

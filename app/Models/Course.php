@@ -9,8 +9,19 @@ class Course extends Model
 {
     use HasFactory;
     protected $primaryKey = 'course_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
-        'course_code', 'course_name', 'instructor', 'section', 'credits', 'room', 'schedule', 'days', 'time', 'school',
+        'course_code',
+        'course_name',
+        'instructor',
+        'section',
+        'credits',
+        'room',
+        'schedule',
+        'days',
+        'time',
+        'school',
     ];
 
     public function changeGradeForms()

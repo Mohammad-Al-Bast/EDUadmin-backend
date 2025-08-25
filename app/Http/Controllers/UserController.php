@@ -18,12 +18,13 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-        
-        // Users can only view their own profile unless they're admin
-        if (Auth::id() !== (int)$id) {
+        $currentUser = Auth::user();
+
+        // Users can view their own profile OR admins can view any profile
+        if ($currentUser->id !== (int)$id && !$currentUser->is_admin) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        
+
         return response()->json($user);
     }
 
@@ -44,36 +45,47 @@ class UserController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         $user = User::create($validated);
-        
+
         return response()->json($user, 201);
     }
 
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        $currentUser = Auth::user();
 
-        // Users can only update their own profile unless they're admin
-        if (Auth::id() !== (int)$id) {
+        // Users can update their own profile OR admins can update any profile
+        if ($currentUser->id !== (int)$id && !$currentUser->is_admin) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $validated = $request->validate([
+        // Define validation rules
+        $rules = [
             'name'        => 'sometimes|required|string|max:255',
             'email'       => 'sometimes|required|email|unique:users,email,' . $user->id,
-            'password'    => 'sometimes|required|string|min:8',
-            'is_verified' => 'sometimes|boolean',
-            'is_admin'    => 'sometimes|boolean',
             'campus'      => 'sometimes|nullable|string|max:255',
             'school'      => 'sometimes|nullable|string|max:255',
             'profile'     => 'sometimes|nullable|string',
-        ]);
+        ];
+
+        // Only admins can update sensitive fields
+        if ($currentUser->is_admin) {
+            $rules['password'] = 'sometimes|required|string|min:8';
+            $rules['is_verified'] = 'sometimes|boolean';
+            $rules['is_admin'] = 'sometimes|boolean';
+        }
+
+        $validated = $request->validate($rules);
 
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         }
 
         $user->update($validated);
-        return response()->json($user);
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => $user->fresh()
+        ]);
     }
 
     public function destroy($id)
@@ -82,7 +94,7 @@ class UserController extends Controller
         if (Auth::id() !== (int)$id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        
+
         User::destroy($id);
         return response()->json(['message' => 'User deleted successfully']);
     }

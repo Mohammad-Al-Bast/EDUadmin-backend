@@ -10,8 +10,12 @@ class CoursesChangeGradeForm extends Model
     use HasFactory;
     protected $table = 'courses_change_grade_form';
     protected $primaryKey = 'course_grade_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
     protected $fillable = [
-        'courses_id_change_grade_form', 'grade_type', 'grade_percentage',
+        'courses_id_change_grade_form',
+        'grade_type',
+        'grade_percentage',
     ];
 
     public function course()

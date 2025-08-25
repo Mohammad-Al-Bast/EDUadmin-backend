@@ -72,11 +72,6 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('auth.password.change');
     });
 
-    // Legacy user endpoint (for backward compatibility)
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
     // -----------------------------------------------------------------------------
     // Course Management (Read Access for All Authenticated Users)
     // -----------------------------------------------------------------------------
@@ -86,13 +81,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // -----------------------------------------------------------------------------
-    // User Management (Limited Access)
+    // User Management - Moved to Admin Section
     // -----------------------------------------------------------------------------
-    Route::group(['prefix' => 'users'], function () {
-        Route::get('/', [UserController::class, 'index'])->middleware('admin')->name('users.index');
-        Route::get('{user}', [UserController::class, 'show'])->name('users.show'); // Own data or admin
-        Route::put('{user}', [UserController::class, 'update'])->name('users.update'); // Own data or admin
-    });
+    // All user management operations moved to /admin/users/ prefix for security
 
     // -----------------------------------------------------------------------------
     // Student Management (Limited Access)
@@ -100,14 +91,29 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'students'], function () {
         Route::get('/', [StudentController::class, 'index'])->middleware('admin')->name('students.index');
         Route::get('{student}', [StudentController::class, 'show'])->name('students.show'); // Own data or admin
-        Route::put('{student}', [StudentController::class, 'update'])->name('students.update'); // Own data or admin
+        // PUT operation moved to admin section
     });
 
     // -----------------------------------------------------------------------------
     // Grade Change Forms (All Authenticated Users)
     // -----------------------------------------------------------------------------
-    Route::apiResource('change-grade-forms', ChangeGradeFormController::class);
-    Route::apiResource('courses-change-grade-forms', CoursesChangeGradeFormController::class);
+    Route::group(['prefix' => 'change-grade-forms'], function () {
+        Route::get('/', [ChangeGradeFormController::class, 'index'])->name('change-grade-forms.index');
+        Route::post('/', [ChangeGradeFormController::class, 'store'])->name('change-grade-forms.store');
+        Route::get('{change_grade_form}', [ChangeGradeFormController::class, 'show'])->name('change-grade-forms.show');
+        Route::put('{change_grade_form}', [ChangeGradeFormController::class, 'update'])->name('change-grade-forms.update');
+        Route::patch('{change_grade_form}', [ChangeGradeFormController::class, 'update'])->name('change-grade-forms.update');
+        Route::delete('{change_grade_form}', [ChangeGradeFormController::class, 'destroy'])->name('change-grade-forms.destroy');
+    });
+
+    Route::group(['prefix' => 'courses-change-grade-forms'], function () {
+        Route::get('/', [CoursesChangeGradeFormController::class, 'index'])->name('courses-change-grade-forms.index');
+        Route::post('/', [CoursesChangeGradeFormController::class, 'store'])->name('courses-change-grade-forms.store');
+        Route::get('{courses_change_grade_form}', [CoursesChangeGradeFormController::class, 'show'])->name('courses-change-grade-forms.show');
+        Route::put('{courses_change_grade_form}', [CoursesChangeGradeFormController::class, 'update'])->name('courses-change-grade-forms.update');
+        Route::patch('{courses_change_grade_form}', [CoursesChangeGradeFormController::class, 'update'])->name('courses-change-grade-forms.update');
+        Route::delete('{courses_change_grade_form}', [CoursesChangeGradeFormController::class, 'destroy'])->name('courses-change-grade-forms.destroy');
+    });
 });
 
 // =============================================================================
@@ -120,6 +126,12 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // User Administration
     // -----------------------------------------------------------------------------
     Route::group(['prefix' => 'admin/users'], function () {
+        // User CRUD operations
+        Route::get('/', [UserController::class, 'index'])->name('admin.users.index');
+        Route::get('{user}', [UserController::class, 'show'])->name('admin.users.show');
+        Route::put('{user}', [UserController::class, 'update'])->name('admin.users.update');
+
+        // User admin actions
         Route::post('{id}/verify', [UserController::class, 'verifyUser'])->name('admin.users.verify');
         Route::post('{id}/block', [UserController::class, 'blockUser'])->name('admin.users.block');
         Route::post('{id}/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.reset-password');
@@ -134,6 +146,15 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::delete('/', [CourseController::class, 'destroyAll'])->name('admin.courses.destroy-all');
         Route::delete('{course}', [CourseController::class, 'destroy'])->name('admin.courses.destroy');
     });
+
+    // -----------------------------------------------------------------------------
+    // Student Administration (Admin Only)
+    // -----------------------------------------------------------------------------
+    Route::group(['prefix' => 'admin/students'], function () {
+        Route::put('{student}', [StudentController::class, 'update'])->name('admin.students.update');
+        Route::delete('/', [StudentController::class, 'destroyAll'])->name('admin.students.destroy-all');
+        Route::delete('{student}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
+    });
 });
 
 // =============================================================================
@@ -143,31 +164,32 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 Route::middleware(['auth:sanctum', 'admin.verified'])->group(function () {
 
     // -----------------------------------------------------------------------------
-    // User Management (Create)
+    // User Management (Create) - Added to Admin Users Section
     // -----------------------------------------------------------------------------
-    Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::group(['prefix' => 'admin/users'], function () {
+        Route::post('/', [UserController::class, 'store'])->name('admin.users.store');
+    });
 
     // -----------------------------------------------------------------------------
-    // Course Management (Full CRUD)
+    // Course Management (Full CRUD) - Moved to Admin Section
     // -----------------------------------------------------------------------------
-    Route::group(['prefix' => 'courses'], function () {
+    Route::group(['prefix' => 'admin/courses'], function () {
         Route::post('/', [CourseController::class, 'store'])->name('admin.courses.store');
         Route::put('{course}', [CourseController::class, 'update'])->name('admin.courses.update');
     });
 
     // -----------------------------------------------------------------------------
-    // Student Management (Full CRUD)
+    // Student Management (Full CRUD) - Moved to Admin Section
     // -----------------------------------------------------------------------------
-    Route::group(['prefix' => 'students'], function () {
+    Route::group(['prefix' => 'admin/students'], function () {
         Route::post('/', [StudentController::class, 'store'])->name('admin.students.store');
-        Route::delete('/', [StudentController::class, 'destroyAll'])->name('admin.students.destroy-all');
-        Route::delete('{student}', [StudentController::class, 'destroy'])->name('admin.students.destroy');
+        // DELETE operations already in admin section above
     });
 
     // -----------------------------------------------------------------------------
     // Import Management (Verified Admin Only)
     // -----------------------------------------------------------------------------
-    Route::group(['prefix' => 'import'], function () {
+    Route::group(['prefix' => 'admin/import'], function () {
         // Import Data
         Route::post('students', [ImportController::class, 'importStudents'])->name('admin.import.students');
         Route::post('courses', [ImportController::class, 'importCourses'])->name('admin.import.courses');
