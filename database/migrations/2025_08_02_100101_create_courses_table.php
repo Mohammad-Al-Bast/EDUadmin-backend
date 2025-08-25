@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string('time');
             $table->string('school');
             $table->timestamps();
+
+            // Add unique constraint on the combination of course_name, course_code, and section
+            $table->unique(['course_name', 'course_code', 'section'], 'courses_name_code_section_unique');
         });
     }
 

@@ -25,8 +25,8 @@ class CourseController extends Controller
     {
         try {
             $validated = $request->validate([
-                'course_name'        => 'required|string|max:255|unique:courses,course_name,NULL,course_id',
-                'course_code'        => 'required|string|max:50|unique:courses,course_code,NULL,course_id',
+                'course_name'        => 'required|string|max:255',
+                'course_code'        => 'required|string|max:50',
                 'instructor'         => 'required|string|max:255',
                 'section'            => 'required|string|max:50',
                 'credits'            => 'required|integer',
@@ -37,14 +37,30 @@ class CourseController extends Controller
                 'school'             => 'required|string|max:255',
             ]);
 
+            // Check for unique combination of course_name, course_code, and section
+            $existingCourse = Course::where('course_name', $validated['course_name'])
+                ->where('course_code', $validated['course_code'])
+                ->where('section', $validated['section'])
+                ->first();
+
+            if ($existingCourse) {
+                return response()->json([
+                    'message' => 'A course with this name, code, and section already exists.',
+                    'errors' => [
+                        'course_name' => ['This combination of course name, code, and section already exists.'],
+                        'course_code' => ['This combination of course name, code, and section already exists.'],
+                        'section' => ['This combination of course name, code, and section already exists.']
+                    ]
+                ], 422);
+            }
+
             $course = Course::create($validated);
             return response()->json($course, 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            $errors = $e->validator->errors();
-            if ($errors->has('course_name') || $errors->has('course_code')) {
-                return response()->json(['message' => 'This course already exists.'], 409);
-            }
-            throw $e;
+            return response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $e->validator->errors()
+            ], 422);
         }
     }
 
@@ -56,13 +72,13 @@ class CourseController extends Controller
 
 
             $validated = $request->validate([
-                'course_name'        => 'sometimes|required|string|max:255|unique:courses,course_name,' . $course->course_id . ',course_id',
-                'course_code'        => 'sometimes|required|string|max:50|unique:courses,course_code,' . $course->course_id . ',course_id',
+                'course_name'        => 'sometimes|required|string|max:255',
+                'course_code'        => 'sometimes|required|string|max:50',
                 'course_description' => 'sometimes|nullable|string',
                 'course_credits'     => 'sometimes|nullable|integer',
                 'department'         => 'sometimes|nullable|string|max:255',
                 'instructor'         => 'sometimes|nullable|string|max:255',
-                'section'            => 'sometimes|nullable|string|max:50',
+                'section'            => 'sometimes|required|string|max:50',
                 'credits'            => 'sometimes|nullable|integer',
                 'room'               => 'sometimes|nullable|string|max:50',
                 'schedule'           => 'sometimes|nullable|string|max:255',
@@ -73,6 +89,30 @@ class CourseController extends Controller
 
             if (empty($validated)) {
                 return response()->json(['message' => 'No valid fields to update'], 400);
+            }
+
+            // Check for unique combination if course_name, course_code, or section is being updated
+            if (isset($validated['course_name']) || isset($validated['course_code']) || isset($validated['section'])) {
+                $checkName = $validated['course_name'] ?? $course->course_name;
+                $checkCode = $validated['course_code'] ?? $course->course_code;
+                $checkSection = $validated['section'] ?? $course->section;
+
+                $existingCourse = Course::where('course_name', $checkName)
+                    ->where('course_code', $checkCode)
+                    ->where('section', $checkSection)
+                    ->where('course_id', '!=', $course->course_id)
+                    ->first();
+
+                if ($existingCourse) {
+                    return response()->json([
+                        'message' => 'A course with this name, code, and section already exists.',
+                        'errors' => [
+                            'course_name' => ['This combination of course name, code, and section already exists.'],
+                            'course_code' => ['This combination of course name, code, and section already exists.'],
+                            'section' => ['This combination of course name, code, and section already exists.']
+                        ]
+                    ], 422);
+                }
             }
 
             $course->fill($validated);
