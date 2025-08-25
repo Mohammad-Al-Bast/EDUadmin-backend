@@ -28,16 +28,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/{user}', [UserController::class, 'show']); // Own data or admin
     Route::put('users/{user}', [UserController::class, 'update']); // Own data or admin
     Route::delete('users/{user}', [UserController::class, 'destroy'])->middleware('admin'); // Admin only
-    
+
     // Students can view courses
     Route::get('courses', [CourseController::class, 'index']);
     Route::get('courses/{course}', [CourseController::class, 'show']);
-    
+
+    // Course deletion (admin only, no email verification required)
+    Route::delete('courses', [CourseController::class, 'destroyAll'])->middleware('admin');
+    Route::delete('courses/{course}', [CourseController::class, 'destroy'])->middleware('admin');
+
+    // Student deletion (admin only, no email verification required)
+    Route::delete('students', [StudentController::class, 'destroyAll'])->middleware('admin');
+    Route::delete('students/{student}', [StudentController::class, 'destroy'])->middleware('admin');
+
     // Students can view their own data
     Route::get('students', [StudentController::class, 'index'])->middleware('admin'); // Admin only
     Route::get('students/{student}', [StudentController::class, 'show']); // Own data or admin
     Route::put('students/{student}', [StudentController::class, 'update']); // Own data or admin
-    
+
     // Grade change forms
     Route::apiResource('change-grade-forms', ChangeGradeFormController::class);
     Route::apiResource('courses-change-grade-forms', CoursesChangeGradeFormController::class);
@@ -47,16 +55,14 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'verified', 'admin'])->group(function () {
     // User management (admin only)
     Route::post('users', [UserController::class, 'store']);
-    
+
     // Course management (admin only)
     Route::post('courses', [CourseController::class, 'store']);
     Route::put('courses/{course}', [CourseController::class, 'update']);
-    Route::delete('courses/{course}', [CourseController::class, 'destroy']);
-    
+
     // Student management (admin only)
     Route::post('students', [StudentController::class, 'store']);
-    Route::delete('students/{student}', [StudentController::class, 'destroy']);
-    
+
     // Import endpoints (admin only)
     Route::post('import/students', [ImportController::class, 'importStudents']);
     Route::post('import/courses', [ImportController::class, 'importCourses']);
@@ -86,7 +92,7 @@ Route::group(['namespace' => 'App\\Http\\Controllers\\API'], function () {
         ->middleware('guest')
         ->middleware('throttle:password')
         ->name('password.email');
-    
+
     Route::post('reset-password', [ResetPasswordController::class, 'reset'])
         ->middleware('guest')
         ->middleware('throttle:password')
@@ -97,25 +103,25 @@ Route::group(['namespace' => 'App\\Http\\Controllers\\API'], function () {
         // User Info and Logout (no email verification required)
         Route::get('get-user', [AuthenticationController::class, 'userInfo'])->name('get-user');
         Route::post('logout', [AuthenticationController::class, 'logOut'])->name('logout');
-        
+
         // Email Verification routes (no email verification required)
         Route::post('email/verify', [VerificationController::class, 'send'])->name('verification.send');
         Route::post('email/resend', [VerificationController::class, 'resend'])
             ->middleware('throttle:password')
             ->name('verification.resend');
     });
-    
+
     // ------------- Sensitive Routes (Require Email Verification) -------------//
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Profile Management
         Route::put('profile', [AuthenticationController::class, 'updateProfile'])->name('profile.update');
-        
+
         // Password Change
         Route::post('change-password', [ChangePasswordController::class, 'changePassword'])
             ->middleware('throttle:password')
             ->name('password.change');
     });
-    
+
     // Email Verification Link (Signed Route)
     Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
         ->middleware(['auth:sanctum', 'signed', 'throttle:password'])

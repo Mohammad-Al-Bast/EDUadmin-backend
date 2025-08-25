@@ -107,4 +107,24 @@ class CourseController extends Controller
             return response()->json(['message' => 'Course not found'], 404);
         }
     }
+
+    public function destroyAll()
+    {
+        try {
+            $deletedCount = Course::count();
+
+            if ($deletedCount === 0) {
+                return response()->json(['message' => 'No courses found to delete'], 404);
+            }
+
+            Course::truncate(); // More efficient than delete() for all records
+
+            return response()->json([
+                'message' => 'All courses deleted successfully',
+                'deleted_count' => $deletedCount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete courses'], 500);
+        }
+    }
 }

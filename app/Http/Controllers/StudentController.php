@@ -89,4 +89,24 @@ class StudentController extends Controller
             return response()->json(['message' => 'Student not found'], 404);
         }
     }
+
+    public function destroyAll()
+    {
+        try {
+            $deletedCount = Student::count();
+
+            if ($deletedCount === 0) {
+                return response()->json(['message' => 'No students found to delete'], 404);
+            }
+
+            Student::truncate(); // More efficient than delete() for all records
+
+            return response()->json([
+                'message' => 'All students deleted successfully',
+                'deleted_count' => $deletedCount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete students'], 500);
+        }
+    }
 }
