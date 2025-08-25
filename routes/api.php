@@ -134,7 +134,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         // User admin actions
         Route::post('{id}/verify', [UserController::class, 'verifyUser'])->name('admin.users.verify');
         Route::post('{id}/block', [UserController::class, 'blockUser'])->name('admin.users.block');
-        Route::post('{id}/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.reset-password');
+        Route::match(['post', 'put'], '{id}/reset-password', [UserController::class, 'resetPassword'])->name('admin.users.reset-password');
         Route::delete('{id}/delete', [UserController::class, 'deleteUser'])->name('admin.users.delete');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     });

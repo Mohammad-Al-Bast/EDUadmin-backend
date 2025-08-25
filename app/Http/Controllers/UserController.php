@@ -139,14 +139,20 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function resetPassword($id)
+    public function resetPassword(Request $request, $id)
     {
         $user = User::find($id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $newPassword = bin2hex(random_bytes(8));
+        // Validate the incoming password
+        $validated = $request->validate([
+            'password' => 'required|string|min:8|max:255'
+        ]);
+
+        // Use the provided password or generate a random one if not provided
+        $newPassword = $validated['password'];
         $user->password = bcrypt($newPassword);
         $user->save();
 
