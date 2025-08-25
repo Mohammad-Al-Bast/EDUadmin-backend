@@ -6,27 +6,28 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
         apiPrefix: 'api/v1',
-        commands: __DIR__.'/../routes/console.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Register middleware aliases
         $middleware->alias([
-            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'verified' => \App\Http\Middleware\EnsureUserIsVerified::class,
+            'admin.verified' => \App\Http\Middleware\EnsureAdminAndVerified::class,
         ]);
-        
+
         // Apply security headers globally
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
-        
+
         // API routes should always return JSON responses
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
-        
+
         // Handle CORS for API requests
         $middleware->group('api', [
             'throttle:api',
@@ -43,7 +44,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
         });
-        
+
         $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -52,7 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 422);
             }
         });
-        
+
         $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([

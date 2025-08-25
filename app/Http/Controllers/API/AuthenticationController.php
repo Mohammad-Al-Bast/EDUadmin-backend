@@ -83,9 +83,44 @@ class AuthenticationController extends Controller
                 'email' => $user->email,
                 'is_verified' => $user->is_verified,
                 'is_admin' => $user->is_admin,
-                'email_verified_at' => $user->email_verified_at
-            ]
+                'campus' => $user->campus,
+                'school' => $user->school,
+                'profile' => $user->profile,
+            ],
+            'verification_status' => $user->getVerificationStatus(),
+            'permissions' => [
+                'can_perform_admin_actions' => $user->canPerformAdminActions(),
+                'can_delete_courses' => $user->canPerformAdminActions(),
+                'can_delete_students' => $user->canPerformAdminActions(),
+            ],
+            'actions_required' => $this->getRequiredActions($user)
         ]);
+    }
+
+    /**
+     * Get required actions for user verification
+     */
+    private function getRequiredActions($user): array
+    {
+        $actions = [];
+
+        if (!$user->is_verified) {
+            $actions[] = [
+                'action' => 'admin_verification',
+                'message' => 'Your account needs to be verified by an administrator',
+                'contact' => 'Please contact your system administrator for account verification'
+            ];
+        }
+
+        if (!$user->is_admin) {
+            $actions[] = [
+                'action' => 'admin_privileges',
+                'message' => 'Administrative privileges required for certain actions',
+                'contact' => 'Please contact your system administrator if you need admin access'
+            ];
+        }
+
+        return $actions;
     }
 
     // Update user profile
@@ -102,7 +137,7 @@ class AuthenticationController extends Controller
 
         $user = $request->user();
         $emailChanged = $user->email !== $request->email;
-        
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,

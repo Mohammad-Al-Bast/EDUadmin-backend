@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -52,5 +51,41 @@ class User extends Authenticatable implements MustVerifyEmail
             'is_verified' => 'boolean',
             'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Check if user is an administrator
+     */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
+    }
+
+    /**
+     * Check if user is verified by admin
+     */
+    public function isVerified(): bool
+    {
+        return (bool) $this->is_verified;
+    }
+
+    /**
+     * Get user verification status
+     */
+    public function getVerificationStatus(): array
+    {
+        return [
+            'is_verified' => $this->isVerified(),
+            'is_admin' => $this->isAdmin(),
+            'verified_at' => $this->is_verified ? 'Verified by admin' : 'Not verified',
+        ];
+    }
+
+    /**
+     * Check if user can perform administrative actions
+     */
+    public function canPerformAdminActions(): bool
+    {
+        return $this->isAdmin() && $this->isVerified();
     }
 }

@@ -27,17 +27,14 @@ class CourseController extends Controller
             $validated = $request->validate([
                 'course_name'        => 'required|string|max:255|unique:courses,course_name,NULL,course_id',
                 'course_code'        => 'required|string|max:50|unique:courses,course_code,NULL,course_id',
-                'course_description' => 'nullable|string',
-                'course_credits'     => 'nullable|integer',
-                'department'         => 'nullable|string|max:255',
-                'instructor'         => 'nullable|string|max:255',
-                'section'            => 'nullable|string|max:50',
-                'credits'            => 'nullable|integer',
-                'room'               => 'nullable|string|max:50',
-                'schedule'           => 'nullable|string|max:255',
-                'days'               => 'nullable|string|max:255',
-                'time'               => 'nullable|string|max:50',
-                'school'             => 'nullable|string|max:255',
+                'instructor'         => 'required|string|max:255',
+                'section'            => 'required|string|max:50',
+                'credits'            => 'required|integer',
+                'room'               => 'required|string|max:50',
+                'schedule'           => 'required|string|max:255',
+                'days'               => 'required|string|max:255',
+                'time'               => 'required|string|max:50',
+                'school'             => 'required|string|max:255',
             ]);
 
             $course = Course::create($validated);
