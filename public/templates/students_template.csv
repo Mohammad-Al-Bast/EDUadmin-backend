@@ -1,4 +1,4 @@
 student_name,university_id,campus,school,major,semester,year
-John Doe,12345,Main Campus,Engineering,Computer Science,Fall 2025,3
-Jane Smith,12346,Downtown Campus,Business,Marketing,Spring 2025,2
-Mike Johnson,12347,Main Campus,Arts & Sciences,Biology,Fall 2025,4
+John Doe,12345678,Main Campus,Engineering,Computer Science,Fall,2025
+Jane Smith,12345679,Downtown Campus,Business,Marketing,Spring,2025
+Mike Johnson,12345670,Main Campus,Arts & Sciences,Biology,Fall,2025
