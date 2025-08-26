@@ -47,6 +47,22 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) {
             if ($request->is('api/*')) {
+                // Log validation errors for debugging
+                \Illuminate\Support\Facades\Log::warning('API Validation failed', [
+                    'url' => $request->fullUrl(),
+                    'method' => $request->method(),
+                    'errors' => $e->errors(),
+                    'input' => $request->except(['password']),
+                    'files' => array_map(function ($file) {
+                        return [
+                            'name' => $file->getClientOriginalName(),
+                            'size' => $file->getSize(),
+                            'mime' => $file->getMimeType(),
+                            'extension' => $file->getClientOriginalExtension(),
+                        ];
+                    }, $request->allFiles())
+                ]);
+
                 return response()->json([
                     'message' => 'Validation failed',
                     'errors' => $e->errors()

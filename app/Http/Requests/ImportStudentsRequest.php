@@ -25,7 +25,7 @@ class ImportStudentsRequest extends FormRequest
             'file' => [
                 'required',
                 'file',
-                'mimes:csv,xlsx,xls',
+                'mimetypes:text/csv,text/plain,application/csv,application/excel,application/vnd.ms-excel,application/vnd.msexcel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'max:10240', // 10MB max
             ],
         ];
@@ -39,7 +39,7 @@ class ImportStudentsRequest extends FormRequest
         return [
             'file.required' => 'Please select a file to upload.',
             'file.file' => 'The uploaded file is not valid.',
-            'file.mimes' => 'The file must be a CSV, XLS, or XLSX file.',
+            'file.mimetypes' => 'The file must be a CSV, XLS, or XLSX file.',
             'file.max' => 'The file size must not exceed 10MB.',
         ];
     }
