@@ -16,6 +16,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ChangeGradeFormController;
 use App\Http\Controllers\CoursesChangeGradeFormController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\API\DashboardController;
 
 
 /*
@@ -78,6 +79,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'courses'], function () {
         Route::get('/', [CourseController::class, 'index'])->name('courses.index');
         Route::get('{course}', [CourseController::class, 'show'])->name('courses.show');
+    });
+
+    // -----------------------------------------------------------------------------
+    // Dashboard Statistics (All Authenticated Users)
+    // -----------------------------------------------------------------------------
+    Route::group(['prefix' => 'dashboard'], function () {
+        Route::get('summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
+        Route::get('stats', [DashboardController::class, 'detailedStats'])->name('dashboard.stats');
     });
 
     // -----------------------------------------------------------------------------
