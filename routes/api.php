@@ -61,6 +61,10 @@ Route::group(['prefix' => 'auth', 'namespace' => 'App\\Http\\Controllers\\API'],
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    // User Emails API
+    Route::get('users/{user}/emails', [\App\Http\Controllers\UserEmailController::class, 'index']);
+    Route::post('users/{user}/emails', [\App\Http\Controllers\UserEmailController::class, 'store']);
+
     // -----------------------------------------------------------------------------
     // User Profile & Authentication Management
     // -----------------------------------------------------------------------------
