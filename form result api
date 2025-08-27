@@ -1,0 +1,33 @@
+// Single email
+POST /api/change-grade-forms/{id}/send-email
+Body: {
+  "email": "recipient@email.com",
+  "attach_pdf": true,
+  "message": "Optional custom message"
+}
+
+// Multiple emails  
+POST /api/change-grade-forms/{id}/send-multiple-emails
+Body: {
+  "emails": ["email1@domain.com", "email2@domain.com"],
+  "attach_pdf": true,
+  "message": "Optional custom message"
+}
+
+// Base URL: http://your-domain.com/api/change-grade-forms
+
+// CRUD Operations
+GET    /                          // List all forms
+POST   /                          // Create new form
+GET    /{id}                      // Get specific form
+PUT    /{id}                      // Update form
+DELETE /{id}                      // Delete form
+
+// Report Functionality  
+GET    /reports                   // Get all forms with report URLs
+GET    /{id}/report               // Generate JSON report
+GET    /{id}/printable            // Generate printable HTML
+
+// Email Functionality
+POST   /{id}/send-email           // Send to single recipient
+POST   /{id}/send-multiple-emails // Send to multiple recipients

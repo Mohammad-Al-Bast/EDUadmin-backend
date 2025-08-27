@@ -109,10 +109,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'change-grade-forms'], function () {
         Route::get('/', [ChangeGradeFormController::class, 'index'])->name('change-grade-forms.index');
         Route::post('/', [ChangeGradeFormController::class, 'store'])->name('change-grade-forms.store');
+        Route::get('reports', [ChangeGradeFormController::class, 'getFormsWithReports'])->name('change-grade-forms.reports');
         Route::get('{change_grade_form}', [ChangeGradeFormController::class, 'show'])->name('change-grade-forms.show');
         Route::put('{change_grade_form}', [ChangeGradeFormController::class, 'update'])->name('change-grade-forms.update');
         Route::patch('{change_grade_form}', [ChangeGradeFormController::class, 'update'])->name('change-grade-forms.update');
         Route::delete('{change_grade_form}', [ChangeGradeFormController::class, 'destroy'])->name('change-grade-forms.destroy');
+
+        // Report functionality
+        Route::get('{id}/report', [ChangeGradeFormController::class, 'generateReport'])->name('change-grade-forms.report');
+        Route::get('{id}/printable', [ChangeGradeFormController::class, 'generatePrintableReport'])->name('change-grade-forms.printable');
+
+        // Email functionality
+        Route::post('{id}/send-email', [ChangeGradeFormController::class, 'sendReportByEmail'])->name('change-grade-forms.send-email');
+        Route::post('{id}/send-multiple-emails', [ChangeGradeFormController::class, 'sendReportToMultiple'])->name('change-grade-forms.send-multiple-emails');
     });
 
     Route::group(['prefix' => 'courses-change-grade-forms'], function () {

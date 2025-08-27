@@ -16,6 +16,15 @@ class CoursesChangeGradeForm extends Model
         'courses_id_change_grade_form',
         'grade_type',
         'grade_percentage',
+        'current_grade',
+        'requested_grade',
+        'quizzes_score',
+        'tests_score',
+        'midterm_score',
+        'final_exam_score',
+        'curve_adjustment',
+        'final_numeric_grade',
+        'final_letter_grade',
     ];
 
     public function course()
