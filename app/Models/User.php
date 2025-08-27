@@ -7,10 +7,34 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * Relationship: user has many emails
+     */
+    public function userEmails()
+    {
+        return $this->hasMany(UserEmail::class);
+    }
+
+    /**
+     * Booted method to assign locked email after user creation
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Assign the locked email (hardcoded)
+            \App\Models\UserEmail::create([
+                'user_id' => $user->id,
+                'email' => 'locked@email.com',
+                'is_locked' => true,
+            ]);
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
