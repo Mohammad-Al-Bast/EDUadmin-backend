@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ChangeGradeForm;
 use App\Models\Student;
+use App\Models\Course;
+use App\Models\CoursesChangeGradeForm;
 use App\Mail\ChangeGradeFormReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -50,6 +52,20 @@ class ChangeGradeFormController extends Controller
         // Replace university_id with student_id for database storage
         $validated['student_id'] = $student->student_id;
         unset($validated['university_id']);
+
+        // Create a CoursesChangeGradeForm record automatically if course_grade_id is not provided
+        if (empty($validated['course_grade_id'])) {
+            // Try to find the course by course_code
+            $course = Course::where('course_code', $validated['course_code'])->first();
+            $courseId = $course ? $course->course_id : 1; // Fallback to course ID 1 if not found
+
+            $courseGrade = CoursesChangeGradeForm::create([
+                'courses_id_change_grade_form' => $courseId,
+                'grade_type' => 'Letter', // Default grade type
+                'grade_percentage' => 0.00, // Default percentage, can be updated later
+            ]);
+            $validated['course_grade_id'] = $courseGrade->course_grade_id;
+        }
 
         $item = ChangeGradeForm::create($validated);
 
