@@ -16,9 +16,20 @@ class UsersTableSeeder extends Seeder
                 'email' => 'test@example.com',
                 'password' => Hash::make('password'),
                 'is_verified' => false,
+                'is_admin' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Mohammad Al Bast',
+                'email' => 'bast@gmail.com',
+                'password' => Hash::make('12345678'),
+                'is_verified' => true,
+                'is_admin' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
+        \App\Models\User::factory()->count(10)->create();
     }
 }
