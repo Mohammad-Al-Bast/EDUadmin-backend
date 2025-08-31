@@ -136,6 +136,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('{courses_change_grade_form}', [CoursesChangeGradeFormController::class, 'update'])->name('courses-change-grade-forms.update');
         Route::delete('{courses_change_grade_form}', [CoursesChangeGradeFormController::class, 'destroy'])->name('courses-change-grade-forms.destroy');
     });
+
+    // -----------------------------------------------------------------------------
+    // Register/Drop Courses Forms (All Authenticated Users)
+    // -----------------------------------------------------------------------------
+    Route::group(['prefix' => 'register-drop-courses'], function () {
+        Route::get('/', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'index'])->name('register-drop-courses.index');
+        Route::post('/', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'store'])->name('register-drop-courses.store');
+        Route::get('{form}', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'show'])->name('register-drop-courses.show');
+        Route::put('{form}', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'update'])->name('register-drop-courses.update');
+        Route::patch('{form}', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'update'])->name('register-drop-courses.patch');
+        Route::delete('{form}', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'destroy'])->name('register-drop-courses.destroy');
+
+        // Get forms by student
+        Route::get('student/{studentId}', [\App\Http\Controllers\Api\V1\RegisterDropCourseController::class, 'byStudent'])->name('register-drop-courses.by-student');
+    });
 });
 
 // =============================================================================
