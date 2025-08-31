@@ -74,7 +74,7 @@ class StoreRegisterDropCourseRequest extends FormRequest
             'university_id' => 'required|numeric|digits:8|exists:students,university_id',
             'semester' => 'sometimes|string|max:50',
             'academic_year' => 'sometimes|string|max:20',
-            'reason' => 'required|string|min:10|max:1000',
+            'reason' => 'required|string|min:8|max:1000',
 
             // Registered courses
             'registered_courses' => 'sometimes|array',
