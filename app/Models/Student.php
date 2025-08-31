@@ -44,8 +44,8 @@ class Student extends Model
         return $this->belongsTo(CoursesChangeGradeForm::class, 'registered_courses_id', 'course_grade_id');
     }
 
-    public function registerDropCoursesForms()
+    public function registerDropCourses()
     {
-        return $this->hasMany(RegisterDropCoursesForm::class, 'student_id', 'student_id');
+        return $this->hasMany(RegisterDropCourse::class, 'university_id', 'university_id');
     }
 }

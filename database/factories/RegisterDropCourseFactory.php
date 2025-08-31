@@ -37,7 +37,9 @@ class RegisterDropCourseFactory extends Factory
         })->toArray();
 
         return [
-            'student_id' => Student::factory(),
+            'university_id' => function () {
+                return Student::factory()->create()->university_id;
+            },
             'semester' => fake()->randomElement(['Fall', 'Spring', 'Summer']),
             'academic_year' => fake()->randomElement(['2024-2025', '2025-2026', '2026-2027']),
             'courses' => $coursesData,

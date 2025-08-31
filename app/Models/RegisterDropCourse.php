@@ -11,10 +11,9 @@ class RegisterDropCourse extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'university_id',
         'semester',
         'academic_year',
-        'courses',
         'reason',
         'status',
         'processed_at',
@@ -22,7 +21,6 @@ class RegisterDropCourse extends Model
     ];
 
     protected $casts = [
-        'courses' => 'array',
         'submitted_at' => 'datetime',
         'processed_at' => 'datetime',
         'created_at' => 'datetime',
@@ -43,7 +41,7 @@ class RegisterDropCourse extends Model
      */
     public function student(): BelongsTo
     {
-        return $this->belongsTo(Student::class, 'student_id', 'student_id');
+        return $this->belongsTo(Student::class, 'university_id', 'university_id');
     }
 
     /**
@@ -55,17 +53,27 @@ class RegisterDropCourse extends Model
     }
 
     /**
+     * Get the registered courses for this form.
+     */
+    public function registeredCourses()
+    {
+        return $this->hasMany(FormRegisteredCourse::class, 'form_id');
+    }
+
+    /**
+     * Get the dropped courses for this form.
+     */
+    public function droppedCourses()
+    {
+        return $this->hasMany(FormDroppedCourse::class, 'form_id');
+    }
+
+    /**
      * Get only the register courses from the courses array.
      */
     public function getRegisterCoursesAttribute()
     {
-        if (!$this->courses) {
-            return collect();
-        }
-
-        return collect($this->courses)->filter(function ($course) {
-            return $course['action'] === 'register';
-        });
+        return $this->registeredCourses;
     }
 
     /**
@@ -73,13 +81,7 @@ class RegisterDropCourse extends Model
      */
     public function getDropCoursesAttribute()
     {
-        if (!$this->courses) {
-            return collect();
-        }
-
-        return collect($this->courses)->filter(function ($course) {
-            return $course['action'] === 'drop';
-        });
+        return $this->droppedCourses;
     }
 
     /**
@@ -125,9 +127,9 @@ class RegisterDropCourse extends Model
     /**
      * Scope to filter by student.
      */
-    public function scopeByStudent($query, $studentId)
+    public function scopeByStudent($query, $universityId)
     {
-        return $query->where('student_id', $studentId);
+        return $query->where('university_id', $universityId);
     }
 
     /**

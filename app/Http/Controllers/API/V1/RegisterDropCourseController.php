@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\RegisterDropCourse;
@@ -20,7 +20,7 @@ class RegisterDropCourseController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $query = RegisterDropCourse::with(['student', 'processedBy']);
+            $query = RegisterDropCourse::with(['student', 'processedBy', 'registeredCourses', 'droppedCourses']);
 
             // Apply filters
             if ($request->has('status')) {
@@ -32,8 +32,8 @@ class RegisterDropCourseController extends Controller
             if ($request->has('academic_year')) {
                 $query->byAcademicYear($request->academic_year);
             }
-            if ($request->has('student_id')) {
-                $query->byStudent($request->student_id);
+            if ($request->has('university_id')) {
+                $query->byStudent($request->university_id);
             }
 
             // Apply sorting
@@ -70,21 +70,58 @@ class RegisterDropCourseController extends Controller
             $validated = $request->validated();
 
             $form = RegisterDropCourse::create([
-                'student_id' => $validated['student_id'],
+                'university_id' => $validated['university_id'],
                 'semester' => $validated['semester'],
                 'academic_year' => $validated['academic_year'],
-                'courses' => $validated['courses'],
                 'reason' => $validated['reason'],
                 'status' => 'pending',
                 'submitted_at' => now(),
             ]);
+
+            // Create registered courses
+            if (!empty($validated['registered_courses'])) {
+                foreach ($validated['registered_courses'] as $courseData) {
+                    $form->registeredCourses()->create([
+                        'course_id' => $courseData['course_id'],
+                        'course_code' => $courseData['course_code'],
+                        'course_name' => $courseData['course_name'],
+                        'section' => $courseData['section'],
+                        'instructor' => $courseData['instructor'],
+                        'credits' => $courseData['credits'],
+                        'room' => $courseData['room'] ?? null,
+                        'schedule' => $courseData['schedule'] ?? null,
+                        'days' => $courseData['days'] ?? null,
+                        'time' => $courseData['time'] ?? null,
+                        'school' => $courseData['school'] ?? null,
+                    ]);
+                }
+            }
+
+            // Create dropped courses
+            if (!empty($validated['dropped_courses'])) {
+                foreach ($validated['dropped_courses'] as $courseData) {
+                    $form->droppedCourses()->create([
+                        'course_id' => $courseData['course_id'],
+                        'course_code' => $courseData['course_code'],
+                        'course_name' => $courseData['course_name'],
+                        'section' => $courseData['section'],
+                        'instructor' => $courseData['instructor'],
+                        'credits' => $courseData['credits'],
+                        'room' => $courseData['room'] ?? null,
+                        'schedule' => $courseData['schedule'] ?? null,
+                        'days' => $courseData['days'] ?? null,
+                        'time' => $courseData['time'] ?? null,
+                        'school' => $courseData['school'] ?? null,
+                    ]);
+                }
+            }
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Form submitted successfully',
-                'data' => $form->load(['student', 'processedBy'])
+                'data' => $form->load(['student', 'processedBy', 'registeredCourses', 'droppedCourses'])
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -104,7 +141,7 @@ class RegisterDropCourseController extends Controller
         try {
             return response()->json([
                 'success' => true,
-                'data' => $form->load(['student', 'processedBy']),
+                'data' => $form->load(['student', 'processedBy', 'registeredCourses', 'droppedCourses']),
                 'message' => 'Form retrieved successfully.'
             ]);
         } catch (\Exception $e) {
@@ -179,13 +216,13 @@ class RegisterDropCourseController extends Controller
 
     /**
      * Get all forms for a specific student.
-     * GET api/v1/register-drop-courses/student/{studentId}
+     * GET api/v1/register-drop-courses/student/{universityId}
      */
-    public function byStudent(Request $request, $studentId): JsonResponse
+    public function byStudent(Request $request, $universityId): JsonResponse
     {
         try {
-            $query = RegisterDropCourse::with(['student', 'processedBy'])
-                ->byStudent($studentId);
+            $query = RegisterDropCourse::with(['student', 'processedBy', 'registeredCourses', 'droppedCourses'])
+                ->byStudent($universityId);
 
             // Apply filters
             if ($request->has('status')) {
