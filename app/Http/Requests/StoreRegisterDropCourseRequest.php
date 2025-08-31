@@ -74,7 +74,7 @@ class StoreRegisterDropCourseRequest extends FormRequest
             'university_id' => 'required|numeric|digits:8|exists:students,university_id',
             'semester' => 'sometimes|string|max:50',
             'academic_year' => 'sometimes|string|max:20',
-            'reason' => 'required|string|min:8|max:1000',
+            // 'reason' is now optional, so no validation rule
 
             // Registered courses
             'registered_courses' => 'sometimes|array',
@@ -111,9 +111,7 @@ class StoreRegisterDropCourseRequest extends FormRequest
             'courses.*.id.exists' => 'One or more selected courses do not exist.',
             'courses.*.action.required' => 'Action (register/drop) is required for each course.',
             'courses.*.action.in' => 'Action must be either "register" or "drop".',
-            'reason.required' => 'Reason is required.',
-            'reason.min' => 'Reason must be at least 10 characters long.',
-            'reason.max' => 'Reason cannot exceed 1000 characters.',
+            // 'reason' validation messages removed since it is now optional
         ];
     }
 

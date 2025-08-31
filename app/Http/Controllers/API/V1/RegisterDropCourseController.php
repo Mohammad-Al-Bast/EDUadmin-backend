@@ -73,7 +73,7 @@ class RegisterDropCourseController extends Controller
                 'university_id' => $validated['university_id'],
                 'semester' => $validated['semester'],
                 'academic_year' => $validated['academic_year'],
-                'reason' => $validated['reason'],
+                'reason' => $validated['reason'] ?? null,
                 'status' => 'pending',
                 'submitted_at' => now(),
             ]);
