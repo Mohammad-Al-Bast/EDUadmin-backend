@@ -27,10 +27,10 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            // Assign the locked email (hardcoded)
+            // Assign the user's actual email as locked after user creation
             \App\Models\UserEmail::create([
                 'user_id' => $user->id,
-                'email' => 'locked@email.com',
+                'email' => $user->email,
                 'is_locked' => true,
             ]);
         });
