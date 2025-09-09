@@ -102,7 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Student Management (Limited Access)
     // -----------------------------------------------------------------------------
     Route::group(['prefix' => 'students'], function () {
-        Route::get('/', [StudentController::class, 'index'])->middleware('admin')->name('students.index');
+        Route::get('/', [StudentController::class, 'index'])->name('students.index');
         Route::get('{student}', [StudentController::class, 'show'])->name('students.show'); // Own data or admin
         // PUT operation moved to admin section
     });
