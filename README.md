@@ -1,655 +1,247 @@
-# 🎓 EDUadmin - Complete Learning & Productivity Platform
+# 🎓 EDUadmin - Educational Administration Platform
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4.svg?style=flat-square&logo=php)](https://php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20.svg?style=flat-square&logo=laravel)](https://laravel.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg?style=flat-square)](https://github.com/Mohammad-Al-Bast/EDUadmin)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo">
 </p>
 
-**EDUadmin** is a comprehensive educational administration platform built with Laravel 12, designed to streamline academic processes, manage student records, handle course registrations, and facilitate grade change requests with enterprise-level security and scalability.
+**EDUadmin** is a modern educational administration platform designed to simplify academic management for educational institutions. It provides tools for managing students, courses, grade changes, and administrative tasks through a secure web-based interface.
 
 ---
 
 ## 📋 Table of Contents
 
--   [🚀 Quick Start](#-quick-start)
+-   [� About](#-about)
 -   [✨ Features](#-features)
--   [🏗️ Architecture](#️-architecture)
--   [🛠️ Installation](#️-installation)
--   [⚙️ Configuration](#️-configuration)
--   [📚 API Documentation](#-api-documentation)
--   [🧪 Testing](#-testing)
--   [🚀 Deployment](#-deployment)
--   [🔧 Development](#-development)
--   [📊 Monitoring](#-monitoring)
+-   [🚀 Getting Started](#-getting-started)
+-   [� Usage](#-usage)
+-   [🛠️ Technologies](#️-technologies)
 -   [🤝 Contributing](#-contributing)
+-   [� Support](#-support)
 
 ---
 
-## 🚀 Quick Start
+## � About
 
-### System Requirements
+EDUadmin is built to address the common challenges faced by educational institutions in managing their academic operations. The platform offers a centralized solution for:
 
--   **PHP**: 8.2 or higher
--   **Database**: MySQL 8.0+ / PostgreSQL 13+ / SQLite 3.35+
--   **Node.js**: 18+ (for asset compilation)
--   **Composer**: 2.x
--   **Memory**: 512MB minimum, 2GB recommended
+-   **Student Management** - Maintain comprehensive student records and profiles
+-   **Course Administration** - Organize and manage academic courses and curricula
+-   **Grade Management** - Handle grade changes and academic record updates
+-   **User Administration** - Manage staff and student accounts with role-based access
+-   **Reporting** - Generate reports for administrative and academic purposes
 
-### One-Line Installation
-
-```powershell
-git clone https://github.com/Mohammad-Al-Bast/EDUadmin.git && cd EDUadmin-backend && composer install && cp .env.example .env && php artisan key:generate
-```
+The system is designed with security, scalability, and ease of use in mind, making it suitable for educational institutions of various sizes.
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication & Security
+### 🔐 Secure Access Management
 
--   **Multi-factor Authentication** - Email verification + Admin approval
--   **Role-based Access Control** - Admin/Student/Guest permissions
--   **API Token Management** - Laravel Sanctum integration
--   **Password Security** - Hashing, reset, and strength validation
--   **Security Headers** - XSS, CSRF, and CORS protection
+-   Role-based user authentication and authorization
+-   Multi-level approval workflows
+-   Secure session management
+-   Account verification systems
 
-### 👥 User Management
+### 👥 User & Student Management
 
--   **User Profiles** - Comprehensive profile management
--   **Admin Controls** - User verification, blocking, password reset
--   **Email Management** - Multi-email support per user
--   **Campus & School** - Organizational structure support
--   **Audit Logging** - Track all user activities
+-   Comprehensive student profile management
+-   Staff and administrator account management
+-   Campus and organizational structure support
+-   User activity tracking and audit logs
 
-### 📚 Academic Management
+### 📚 Academic Operations
 
--   **Student Records** - University ID, personal info, academic status
--   **Course Catalog** - Course management with detailed information
--   **Grade Change Requests** - Streamlined grade modification process
--   **Course Registration/Drop** - Semester-based enrollment system
--   **Reporting System** - PDF generation for academic records
+-   Course catalog management
+-   Student enrollment and registration
+-   Grade change request processing
+-   Academic record maintenance
+-   Semester and term management
 
-### 📊 Dashboard & Analytics
+### 📊 Administrative Tools
 
--   **Real-time Statistics** - User counts, course metrics, form statistics
--   **Performance Metrics** - System health and usage analytics
--   **Data Visualization** - Charts and graphs for insights
--   **Export Capabilities** - CSV, Excel, PDF export options
+-   Dashboard with key metrics and statistics
+-   Report generation capabilities
+-   Data export functionality
+-   System monitoring and analytics
 
-### 📱 API & Integration
+### 🔌 Integration & APIs
 
--   **RESTful API** - Full CRUD operations via API
--   **Rate Limiting** - Prevent API abuse
--   **Pagination** - Efficient data handling
--   **File Uploads** - Image and document handling
--   **Import/Export** - Bulk data operations
+-   RESTful API for external integrations
+-   Import/export capabilities for data migration
+-   Email notification system
+-   File upload and document management
 
 ---
 
-## 🏗️ Architecture
+## 🚀 Getting Started
 
-### System Architecture
+### Prerequisites
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   API Gateway   │    │   Database      │
-│   (React/Vue)   │◄──►│   (Laravel)     │◄──►│   (MySQL)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                              │
-                    ┌─────────┴─────────┐
-                    │                   │
-            ┌───────▼────────┐  ┌──────▼──────┐
-            │  File Storage  │  │   Queue     │
-            │  (Local/S3)    │  │  (Redis)    │
-            └────────────────┘  └─────────────┘
-```
+Before setting up EDUadmin, ensure you have:
 
-### Database Schema
+-   A web server environment (Apache, Nginx, or similar)
+-   PHP 8.2 or higher
+-   A database system (MySQL, PostgreSQL, or SQLite)
+-   Composer for dependency management
 
-```sql
-users
-├── id, name, email, password
-├── is_verified, is_admin
-├── campus, school, profile
-└── timestamps
+### Basic Setup
 
-students
-├── id, university_id, user_id
-├── first_name, last_name
-├── academic_info
-└── timestamps
+1. **Download** the project files to your web server
+2. **Configure** your database connection
+3. **Install** required dependencies
+4. **Set up** your environment configuration
+5. **Run** database migrations to create the necessary tables
+6. **Create** your first administrator account
 
-courses
-├── id, name, code, credits
-├── description, semester
-└── timestamps
+### First Steps
 
-change_grade_forms
-├── id, student_university_id
-├── current_grade, requested_grade
-├── justification, status
-└── timestamps
-```
+After installation:
 
-### Middleware Stack
-
--   **SecurityHeaders**: XSS, Content Security Policy
--   **EnsureUserIsAdmin**: Admin-only routes protection
--   **EnsureAdminAndVerified**: Verified admin routes
--   **Sanctum Authentication**: Token-based authentication
--   **CORS**: Cross-origin request handling
--   **Throttling**: Rate limiting (60 requests/minute)
+1. Log in with your administrator account
+2. Configure your institution's basic settings
+3. Add courses and academic programs
+4. Create user accounts for staff and students
+5. Begin managing your academic operations
 
 ---
 
-## 🛠️ Installation
+## � Usage
 
-### Development Setup
+### For Administrators
 
-```powershell
-# 1. Clone repository
-git clone https://github.com/Mohammad-Al-Bast/EDUadmin.git
-cd EDUadmin-backend
+-   **User Management**: Create and manage user accounts, assign roles and permissions
+-   **System Configuration**: Set up institutional settings, academic calendars, and policies
+-   **Data Management**: Import student data, manage course catalogs, oversee system operations
+-   **Reporting**: Generate reports on student performance, system usage, and administrative metrics
 
-# 2. Install PHP dependencies
-composer install
+### For Academic Staff
 
-# 3. Install Node dependencies
-npm install
+-   **Student Records**: Access and update student information within authorized scope
+-   **Grade Management**: Process grade change requests and maintain academic records
+-   **Course Management**: Manage course information and student enrollments
 
-# 4. Environment setup
-copy .env.example .env
-php artisan key:generate
+### For Students
 
-# 5. Database setup
-php artisan migrate --seed
-
-# 6. Build assets
-npm run dev
-
-# 7. Start development server
-php artisan serve
-```
-
-### Docker Setup
-
-```yaml
-# docker-compose.yml
-version: "3.8"
-services:
-    app:
-        build: .
-        ports:
-            - "8000:8000"
-        environment:
-            - DB_HOST=mysql
-            - DB_DATABASE=eduadmin
-    mysql:
-        image: mysql:8.0
-        environment:
-            - MYSQL_DATABASE=eduadmin
-            - MYSQL_ROOT_PASSWORD=secret
-```
+-   **Profile Management**: Update personal information and contact details
+-   **Academic Requests**: Submit grade change requests and course registration forms
+-   **Record Access**: View academic history and current enrollment status
 
 ---
 
-## ⚙️ Configuration
+## 🛠️ Technologies
 
-### Environment Variables
+EDUadmin is built using modern web technologies to ensure reliability, security, and performance:
 
-```env
-# Application
-APP_NAME="EDUadmin"
-APP_ENV=local
-APP_KEY=base64:generated_key_here
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-APP_TIMEZONE=UTC
+### Backend Framework
 
-# Database
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=eduadmin
-DB_USERNAME=root
-DB_PASSWORD=
+-   **Laravel** - PHP web application framework for robust backend development
+-   **MySQL/PostgreSQL** - Relational database management for data storage
+-   **PHP 8.2+** - Modern PHP version with enhanced performance and security features
 
-# Mail Configuration
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=your_email@gmail.com
-MAIL_PASSWORD=your_app_password
-MAIL_ENCRYPTION=tls
+### Frontend Technologies
 
-# Queue Configuration
-QUEUE_CONNECTION=database
-QUEUE_FAILED_DRIVER=database
+-   **HTML5 & CSS3** - Modern web standards for user interface
+-   **JavaScript** - Interactive functionality and dynamic content
+-   **Responsive Design** - Compatible with desktop and mobile devices
 
-# Session & Cache
-SESSION_DRIVER=file
-SESSION_LIFETIME=120
-CACHE_DRIVER=file
+### Security Features
 
-# Security
-SANCTUM_STATEFUL_DOMAINS=localhost,127.0.0.1,::1
-SESSION_DOMAIN=null
-```
-
-### Performance Configuration
-
-```php
-// config/app.php
-'providers' => [
-    // Optimized service providers
-    App\Providers\AppServiceProvider::class,
-    App\Providers\AuthServiceProvider::class,
-],
-
-// config/database.php
-'connections' => [
-    'mysql' => [
-        'options' => [
-            PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-        ],
-        'dump' => [
-            'dump_binary_path' => '/usr/bin',
-        ],
-    ],
-],
-```
-
----
-
-## 📚 API Documentation
-
-### Authentication Endpoints
-
-```http
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-POST /api/v1/auth/logout
-GET  /api/v1/auth/user
-PUT  /api/v1/auth/profile
-```
-
-### User Management
-
-```http
-GET    /api/v1/users              # List all users (Admin)
-GET    /api/v1/users/{id}         # Get user details
-POST   /api/v1/users              # Create user (Admin)
-PUT    /api/v1/users/{id}         # Update user
-DELETE /api/v1/users/{id}         # Delete user (Admin)
-POST   /api/v1/users/{id}/verify  # Verify user (Admin)
-```
-
-### Student Management
-
-```http
-GET    /api/v1/students                    # List students
-GET    /api/v1/students/{university_id}    # Get student
-POST   /api/v1/students                    # Create student (Admin)
-PUT    /api/v1/students/{id}               # Update student
-DELETE /api/v1/students/{id}               # Delete student (Admin)
-```
-
-### Course Management
-
-```http
-GET    /api/v1/courses           # List courses
-GET    /api/v1/courses/{id}      # Course details
-POST   /api/v1/courses           # Create course (Admin)
-PUT    /api/v1/courses/{id}      # Update course (Admin)
-DELETE /api/v1/courses/{id}      # Delete course (Admin)
-```
-
-### Grade Change Forms
-
-```http
-GET    /api/v1/change-grade-forms              # List forms
-POST   /api/v1/change-grade-forms              # Submit form
-GET    /api/v1/change-grade-forms/{id}         # Form details
-PUT    /api/v1/change-grade-forms/{id}         # Update form
-GET    /api/v1/change-grade-forms/{id}/report  # Generate report
-POST   /api/v1/change-grade-forms/{id}/email   # Email report
-```
-
-### Course Registration/Drop
-
-```http
-GET    /api/v1/register-drop-courses                      # List forms
-POST   /api/v1/register-drop-courses                      # Create form
-GET    /api/v1/register-drop-courses/{id}                 # Form details
-PUT    /api/v1/register-drop-courses/{id}                 # Update form
-GET    /api/v1/register-drop-courses/student/{univ_id}    # Student forms
-```
-
-### Dashboard & Statistics
-
-```http
-GET /api/v1/dashboard/summary    # Overview statistics
-GET /api/v1/dashboard/stats      # Detailed analytics
-```
-
-### Response Format
-
-```json
-{
-    "success": true,
-    "message": "Operation completed successfully",
-    "data": {
-        "user": {
-            "id": 1,
-            "name": "Mohammad Al Bast",
-            "email": "mohammad@example.com",
-            "is_admin": true,
-            "is_verified": true
-        }
-    },
-    "meta": {
-        "current_page": 1,
-        "per_page": 15,
-        "total": 100
-    }
-}
-```
-
-### Error Responses
-
-```json
-{
-    "success": false,
-    "message": "Validation failed",
-    "errors": {
-        "email": ["The email field is required."],
-        "password": ["The password must be at least 8 characters."]
-    },
-    "code": 422
-}
-```
-
----
-
-## 🧪 Testing
-
-### Test Structure
-
-```
-tests/
-├── Feature/           # Integration tests
-│   ├── AuthTest.php
-│   ├── UserTest.php
-│   └── CourseTest.php
-├── Unit/              # Unit tests
-│   ├── ModelTest.php
-│   └── ServiceTest.php
-└── Pest.php          # Test configuration
-```
-
-### Running Tests
-
-```powershell
-# Run all tests
-php artisan test
-
-# Run with coverage
-php artisan test --coverage
-
-# Run specific test
-php artisan test --filter UserTest
-
-# Run Pest tests
-./vendor/bin/pest
-
-# Parallel testing
-php artisan test --parallel
-```
-
-### Test Examples
-
-```php
-// Feature Test Example
-test('user can login with valid credentials', function () {
-    $user = User::factory()->create([
-        'email' => 'test@example.com',
-        'password' => Hash::make('password'),
-        'is_verified' => true,
-    ]);
-
-    $response = $this->postJson('/api/v1/auth/login', [
-        'email' => 'test@example.com',
-        'password' => 'password',
-    ]);
-
-    $response->assertStatus(200)
-             ->assertJsonStructure(['token', 'user']);
-});
-
-// Unit Test Example
-test('user can perform admin actions when verified admin', function () {
-    $user = User::factory()->create([
-        'is_admin' => true,
-        'is_verified' => true,
-    ]);
-
-    expect($user->canPerformAdminActions())->toBeTrue();
-});
-```
-
----
-
-## 🚀 Deployment
-
-### Production Checklist
-
--   [ ] Environment variables configured
--   [ ] Database migrations run
--   [ ] SSL certificate installed
--   [ ] Caching configured (Redis/Memcached)
--   [ ] Queue workers configured
--   [ ] Log rotation set up
--   [ ] Backup strategy implemented
--   [ ] Monitoring tools installed
-
-### Server Requirements
-
-```nginx
-# Nginx Configuration
-server {
-    listen 80;
-    server_name your-domain.com;
-    root /var/www/eduadmin/public;
-    index index.php index.html;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-}
-```
-
-### Optimization Commands
-
-```powershell
-# Optimize for production
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
-
-# Clear caches
-php artisan optimize:clear
-
-# Generate IDE helpers
-php artisan ide-helper:generate
-php artisan ide-helper:models
-```
-
----
-
-## 🔧 Development
-
-### Code Standards
-
--   **PSR-12**: PHP coding standard
--   **PHPStan**: Static analysis (Level 6)
--   **Laravel Pint**: Code formatting
--   **Pest**: Modern testing framework
+-   **Authentication & Authorization** - Secure user login and permission management
+-   **Data Encryption** - Protection of sensitive information
+-   **Input Validation** - Prevention of malicious data entry
+-   **Session Security** - Safe user session handling
 
 ### Development Tools
 
-```json
-{
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "format": "./vendor/bin/pint",
-        "analyze": "./vendor/bin/phpstan analyse",
-        "test": "php artisan test"
-    }
-}
-```
-
-### Git Hooks
-
-```bash
-# .git/hooks/pre-commit
-#!/bin/sh
-./vendor/bin/pint --test
-./vendor/bin/phpstan analyse --no-progress
-php artisan test --stop-on-failure
-```
-
-### IDE Configuration
-
-```json
-// VS Code settings.json
-{
-    "php.validate.executablePath": "/usr/bin/php",
-    "php.format.codeStyle": "PSR-12",
-    "emmet.includeLanguages": {
-        "blade": "html"
-    },
-    "files.associations": {
-        "*.blade.php": "blade"
-    }
-}
-```
-
----
-
-## 📊 Monitoring
-
-### Health Checks
-
-```php
-// routes/web.php
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'database' => DB::connection()->getPdo() ? 'connected' : 'disconnected',
-        'cache' => Cache::has('health_check') ? 'working' : 'not working',
-        'timestamp' => now()->toISOString(),
-    ]);
-});
-```
-
-### Logging Configuration
-
-```php
-// config/logging.php
-'channels' => [
-    'single' => [
-        'driver' => 'single',
-        'path' => storage_path('logs/laravel.log'),
-        'level' => env('LOG_LEVEL', 'debug'),
-    ],
-    'daily' => [
-        'driver' => 'daily',
-        'path' => storage_path('logs/laravel.log'),
-        'level' => env('LOG_LEVEL', 'debug'),
-        'days' => 14,
-    ],
-],
-```
-
-### Performance Metrics
-
--   **Response Time**: < 200ms average
--   **Database Queries**: < 10 per request
--   **Memory Usage**: < 128MB per request
--   **Cache Hit Ratio**: > 80%
+-   **Composer** - PHP dependency management
+-   **Artisan CLI** - Laravel's command-line interface for development tasks
+-   **Version Control** - Git-based source code management
 
 ---
 
 ## 🤝 Contributing
 
-### Development Workflow
+We welcome contributions from the community! Here's how you can help improve EDUadmin:
 
-1. **Fork** the repository
-2. **Create** feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'Add amazing feature'`)
-4. **Push** branch (`git push origin feature/amazing-feature`)
-5. **Open** Pull Request
+### Ways to Contribute
 
-### Contribution Guidelines
+-   **Bug Reports** - Help us identify and fix issues
+-   **Feature Requests** - Suggest new functionality or improvements
+-   **Documentation** - Improve guides, tutorials, and code documentation
+-   **Code Contributions** - Submit bug fixes or new features
+-   **Testing** - Help test new releases and report issues
 
--   Follow PSR-12 coding standards
--   Write tests for new features
--   Update documentation
--   Keep commits atomic and descriptive
--   Ensure CI passes before submitting PR
+### Getting Involved
 
-### Code Review Process
+1. **Fork** the project repository
+2. **Create** a new branch for your contribution
+3. **Make** your changes with clear, descriptive commit messages
+4. **Test** your changes thoroughly
+5. **Submit** a pull request with a detailed description
 
--   All PRs require review from maintainers
--   Automated testing must pass
--   Code coverage must not decrease
--   Documentation updates required for new features
+### Community Guidelines
+
+-   Be respectful and inclusive in all interactions
+-   Follow existing code style and conventions
+-   Write clear documentation for new features
+-   Test your changes before submitting
+-   Help others by reviewing pull requests and answering questions
 
 ---
 
-## 📞 Support & Resources
+## 📞 Support
 
-### Documentation
+### Getting Help
 
--   **API Documentation**: [Postman Collection](link-to-postman)
--   **Database Schema**: [DBDiagram](link-to-dbdiagram)
--   **Deployment Guide**: [Wiki](link-to-wiki)
+If you need assistance with EDUadmin, here are your options:
 
-### Community
+**Documentation**
 
--   **GitHub Issues**: [Report bugs](https://github.com/Mohammad-Al-Bast/EDUadmin/issues)
--   **Discussions**: [GitHub Discussions](https://github.com/Mohammad-Al-Bast/EDUadmin/discussions)
--   **Discord**: [Join our server](link-to-discord)
+-   Check this README for basic setup and usage information
+-   Review code comments for technical implementation details
 
-### Changelog
+**Issue Reporting**
 
-See [CHANGELOG.md](CHANGELOG.md) for detailed release notes.
+-   **Bug Reports**: Use GitHub Issues to report software bugs
+-   **Feature Requests**: Submit suggestions for new functionality
+-   **Questions**: Ask general questions in GitHub Discussions
+
+**Community**
+
+-   **GitHub Repository**: [EDUadmin Project](https://github.com/Mohammad-Al-Bast/EDUadmin)
+-   **Discussions**: Join conversations with other users and contributors
+
+### Before Seeking Support
+
+1. **Check Documentation** - Review this README and any additional documentation
+2. **Search Existing Issues** - Your question might already be answered
+3. **Prepare Details** - Include system information, error messages, and steps to reproduce issues
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**, which means:
+
+-   ✅ **Commercial Use** - You can use this software for commercial purposes
+-   ✅ **Modification** - You can modify the source code
+-   ✅ **Distribution** - You can distribute the software
+-   ✅ **Private Use** - You can use the software privately
+-   ❗ **Liability** - The software is provided "as is" without warranty
+-   ❗ **Attribution** - You must include the original license in any distribution
+
+See the [LICENSE](LICENSE) file for the complete license text.
 
 ---
 
 <p align="center">
   <strong>Built with ❤️ by Mohammad Al Bast</strong><br>
   <a href="https://github.com/Mohammad-Al-Bast">GitHub</a> •
-  <a href="mailto:mohammad@example.com">Email</a> •
   <a href="https://linkedin.com/in/mohammad-al-bast">LinkedIn</a>
 </p>
 
@@ -657,7 +249,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects.
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
@@ -669,13 +261,7 @@ You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-## Contributing
+## Contributing to Laravel
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
