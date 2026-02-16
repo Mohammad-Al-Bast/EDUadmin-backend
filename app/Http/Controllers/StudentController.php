@@ -23,6 +23,38 @@ class StudentController extends Controller
         }
     }
 
+    /**
+     * Lookup a student by university_id.
+     * Returns student data if found, or a not_found response with can_create flag for admins.
+     */
+    public function lookup(Request $request)
+    {
+        $request->validate([
+            'university_id' => 'required|integer|digits:8',
+        ]);
+
+        $universityId = $request->input('university_id');
+        $student = Student::where('university_id', $universityId)->first();
+
+        if ($student) {
+            return response()->json([
+                'found' => true,
+                'student' => $student,
+            ]);
+        }
+
+        // Student not found - check if user is admin to allow creation
+        $user = $request->user();
+        $canCreate = $user && $user->isAdmin() && $user->isVerified();
+
+        return response()->json([
+            'found' => false,
+            'university_id' => $universityId,
+            'can_create' => $canCreate,
+            'message' => 'Student not found. ' . ($canCreate ? 'You can create a new student with this university ID.' : 'Contact an administrator to add this student.'),
+        ], 404);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

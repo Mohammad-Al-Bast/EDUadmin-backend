@@ -103,6 +103,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // -----------------------------------------------------------------------------
     Route::group(['prefix' => 'students'], function () {
         Route::get('/', [StudentController::class, 'index'])->name('students.index');
+        Route::post('lookup', [StudentController::class, 'lookup'])->name('students.lookup');
         Route::get('{student}', [StudentController::class, 'show'])->name('students.show'); // Own data or admin
         // PUT operation moved to admin section
     });
